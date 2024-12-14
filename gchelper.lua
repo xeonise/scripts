@@ -1,6 +1,6 @@
 getgenv().getgctables = {}
 getgenv().originalValues = {}
-getgchelper = {}
+local getgchelper = {}
 local function findgc(...)
     local args = {...}
     for i, v in pairs(getgc(true)) do
@@ -21,7 +21,7 @@ local function findgc(...)
         end
     end
 end
-function backupstat(tableIndex, key)
+local function backupstat(tableIndex, key)
     if getgenv().getgctables[tableIndex] then
         local tbl = getgenv().getgctables[tableIndex]
         if rawget(tbl, key) then
