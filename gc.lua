@@ -51,15 +51,20 @@ local function revertstat(tableIndex, key)
     end
 end
 
-local function modifystats(tableIndex, key, newValue)
+local function modifystats(tableIndex, key, newValue, valueType)
     if gh.tables[tableIndex] then
         for _, tbl in ipairs(gh.tables[tableIndex]) do
             local oldValue = tbl[key]
-            tbl[key] = newValue
-            print(string.format("%s -> %s", oldValue, newValue))
+            
+            -- If valueType is not specified, just modify the value
+            if not valueType or type(oldValue) == valueType then
+                tbl[key] = newValue
+                print(string.format("%s -> %s", oldValue, newValue))
+            end
         end
     end
 end
+
 
 getgchelper.findgc = findgc
 getgchelper.backupstat = backupstat
