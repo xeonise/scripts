@@ -29,24 +29,5 @@ gh.revertstat(2,"Ammo")
 gh.revertstat(2,"FireRate")
 ```
 
-
-
-```lua
---all types of search:
--- Search for tables that have the keys "FireRate" and "Ammo" (without checking values)
-getgchelper.findgc({ "FireRate", "Ammo" })
-
--- Search for tables where "FireRate" is 0.1 and "Ammo" is 9
-getgchelper.findgc({ {"FireRate", 0.1}, {"Ammo", 9} })
-
--- Search for tables where "FireRate" is 0.1 and "Ammo" is 9 (index 1),
--- and another set where "AAK" is 0.1 (index 2)
-getgchelper.findgc({ {"FireRate", 0.1}, {"Ammo", 9} }, { {"AAK", 0.1} })
-
--- Search for tables where "FireRate" and "Ammo" are keys (no value check), 
--- and also where "Spread" is 0 (with value check)
-getgchelper.findgc({ "FireRate", "Ammo" }, { {"Spread", 0} })
-also credits to chatgpt for writing that
-```
 if you don't understand how to use it, you can contact me on discord (zxk2021), or create a issue on github, and ask, what you do not understand.
 also, you can create issues, if you encounter any bugs.
