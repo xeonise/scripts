@@ -1,66 +1,63 @@
-getgenv().getgctables = {}
-getgenv().originalValues = {}
+local gh = getgenv()
+gh.tables = {}
+gh.backups = {}
+
 getgchelper = {}
 
--- Function to find all tables that contain a specific key
 local function findgc(...)
-    local args = {...}
-    for i, v in pairs(getgc(true)) do
+    local keySets = {...}
+        for _, v in pairs(getgc(true)) do
         if type(v) == 'table' then
-            for _, argSet in ipairs(args) do
-                local matches = true
-                for i, key in ipairs(argSet) do
-                    -- Check if the key exists in the table
-                    if not rawget(v, key) then
-                        matches = false
+            for setIndex, keys in ipairs(keySets) do
+                local found = true
+                for _, key in ipairs(keys) do
+                    if rawget(v, key) == nil then
+                        found = false
                         break
                     end
                 end
-                
-                -- If the table matches, add it to getgctables
-                if matches then
-                    table.insert(getgenv().getgctables, v)
+                if found then
+                    if not gh.tables[setIndex] then
+                        gh.tables[setIndex] = {}
+                    end
+                    table.insert(gh.tables[setIndex], v)
+                    break
                 end
             end
         end
     end
 end
 
--- Function to backup the original value of a specific key in a specific table by index
 local function backupstat(tableIndex, key)
-    local tbl = getgenv().getgctables[tableIndex]
-    if tbl and rawget(tbl, key) then
-        -- Store the original value of the key in a global backup table
-        getgenv().originalValues[key] = getgenv().originalValues[key] or {}
-        table.insert(getgenv().originalValues[key], tbl[key])
-    else
-        print("Key '" .. key .. "' not found in the table at index " .. tableIndex)
-    end
-end
-
--- Function to revert the value of a specific key in a specific table by index
-local function revertstat(tableIndex, key)
-    local tbl = getgenv().getgctables[tableIndex]
-    if tbl and rawget(tbl, key) then
-        -- Check if the backup exists
-        if getgenv().originalValues[key] then
-            tbl[key] = getgenv().originalValues[key][1]  -- Revert to the first backed-up value (assuming one backup for each key)
-        else
-            print("No backup available for key '" .. key .. "'.")
+    if gh.tables[tableIndex] then
+        gh.backups[tableIndex] = gh.backups[tableIndex] or {}
+        for _, tbl in ipairs(gh.tables[tableIndex]) do
+            gh.backups[tableIndex][tbl] = gh.backups[tableIndex][tbl] or {}
+            gh.backups[tableIndex][tbl][key] = tbl[key]
         end
-    else
-        print("Key '" .. key .. "' not found in the table at index " .. tableIndex)
     end
 end
 
--- Function to modify the value of a specific key in a specific table by index
+local function revertstat(tableIndex, key)
+    if gh.tables[tableIndex] and gh.backups[tableIndex] then
+        for _, tbl in ipairs(gh.tables[tableIndex]) do
+            if gh.backups[tableIndex][tbl] and gh.backups[tableIndex][tbl][key] then
+                local oldValue = tbl[key]
+                local newValue = gh.backups[tableIndex][tbl][key]
+                tbl[key] = newValue
+                print(string.format("%s -> %s", oldValue, newValue))  -- Print change
+            end
+        end
+    end
+end
+
 local function modifystats(tableIndex, key, newValue)
-    local tbl = getgenv().getgctables[tableIndex]
-    if tbl and rawget(tbl, key) then
-        print('Changed', tbl[key], '->', newValue)
-        tbl[key] = newValue
-    else
-        print("Key '" .. key .. "' not found in the table at index " .. tableIndex)
+    if gh.tables[tableIndex] then
+        for _, tbl in ipairs(gh.tables[tableIndex]) do
+            local oldValue = tbl[key]
+            tbl[key] = newValue
+            print(string.format("%s -> %s", oldValue, newValue))
+        end
     end
 end
 
