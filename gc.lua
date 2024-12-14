@@ -6,7 +6,7 @@ getgchelper = {}
 
 local function findgc(...)
     local keySets = {...}
-        for _, v in pairs(getgc(true)) do
+    for _, v in pairs(getgc(true)) do
         if type(v) == 'table' then
             for setIndex, keys in ipairs(keySets) do
                 local found = true
@@ -44,8 +44,8 @@ local function revertstat(tableIndex, key)
             if gh.backups[tableIndex][tbl] and gh.backups[tableIndex][tbl][key] then
                 local oldValue = tbl[key]
                 local newValue = gh.backups[tableIndex][tbl][key]
-                tbl[key] = newValue
-                print(string.format("%s -> %s", oldValue, newValue))  -- Print change
+                -- Explicitly convert values to string to avoid format errors
+                print(string.format("%s -> %s", tostring(oldValue), tostring(newValue)))  -- Convert values to strings
             end
         end
     end
@@ -59,12 +59,12 @@ local function modifystats(tableIndex, key, newValue, valueType)
             -- If valueType is not specified, just modify the value
             if not valueType or type(oldValue) == valueType then
                 tbl[key] = newValue
-                print(string.format("%s -> %s", oldValue, newValue))
+                -- Explicitly convert values to string to avoid format errors
+                print(string.format("%s -> %s", tostring(oldValue), tostring(newValue)))  -- Convert values to strings
             end
         end
     end
 end
-
 
 getgchelper.findgc = findgc
 getgchelper.backupstat = backupstat
