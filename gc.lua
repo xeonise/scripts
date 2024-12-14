@@ -68,3 +68,8 @@ local function modifystats(key, newValue)
         end
     end
 end
+getgchelper.findgc = findgc
+getgchelper.backupstat = backupstat
+getgchelper.revertstat = revertstat
+getgchelper.modifystats = modifystats
+return getgchelper
