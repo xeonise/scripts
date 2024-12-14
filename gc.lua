@@ -1,10 +1,6 @@
--- ModuleScript: GCHandler
-
-local GCHandler = {}
-
-GCHandler.getgctables = {}
-GCHandler.originalValues = {}
-
+getgenv().getgctables = {}
+getgenv().originalValues = {}
+getgchelper = {}
 local function findgc(...)
     local args = {...}
     for i, v in pairs(getgc(true)) do
@@ -17,52 +13,52 @@ local function findgc(...)
                         break
                     end
                 end
+                
                 if matches then
-                    table.insert(GCHandler.getgctables, v)
+                    table.insert(getgenv().getgctables, v)
                 end
             end
         end
     end
 end
-
-function GCHandler.backupstat(tableIndex, key)
-    if GCHandler.getgctables[tableIndex] then
-        local tbl = GCHandler.getgctables[tableIndex]
+local function backupstat(tableIndex, key)
+    if getgenv().getgctables[tableIndex] then
+        local tbl = getgenv().getgctables[tableIndex]
         if rawget(tbl, key) then
-            GCHandler.originalValues[key] = tbl[key]
+            getgenv().originalValues[key] = tbl[key]
         else
-            warn("Key '" .. key .. "' not found in table at index " .. tableIndex)
+            print("Key '" .. key .. "' not found in table at index " .. tableIndex)
         end
     else
-        warn("Table at index " .. tableIndex .. " not found.")
+        print("Table at index " .. tableIndex .. " not found.")
     end
 end
-
-function GCHandler.revertstat(tableIndex, key)
-    if GCHandler.getgctables[tableIndex] then
-        local tbl = GCHandler.getgctables[tableIndex]
-        if rawget(tbl, key) and GCHandler.originalValues[key] then
-            tbl[key] = GCHandler.originalValues[key]
+local function revertstat(tableIndex, key)
+    if getgenv().getgctables[tableIndex] then
+        local tbl = getgenv().getgctables[tableIndex]
+        if rawget(tbl, key) and getgenv().originalValues[key] then
+            tbl[key] = getgenv().originalValues[key]
         else
-            warn("Key '" .. key .. "' not found or original value is not available.")
+            print("Key '" .. key .. "' not found or original value is not available.")
         end
     else
-        warn("Table at index " .. tableIndex .. " not found.")
+        print("Table at index " .. tableIndex .. " not found.")
     end
 end
-
-function GCHandler.modifystats(tableIndex, key, newValue)
-    if GCHandler.getgctables[tableIndex] then
-        local tbl = GCHandler.getgctables[tableIndex]
+local function modifystats(tableIndex, key, newValue)
+    if getgenv().getgctables[tableIndex] then
+        local tbl = getgenv().getgctables[tableIndex]
         if rawget(tbl, key) then
             tbl[key] = newValue
         else
-            warn("Key '" .. key .. "' not found in table at index " .. tableIndex)
+            print("Key '" .. key .. "' not found in table at index " .. tableIndex)
         end
     else
-        warn("Table at index " .. tableIndex .. " not found.")
+        print("Table at index " .. tableIndex .. " not found.")
     end
 end
-
--- Return the module's functions and variables
-return GCHandler
+getgchelper.findgc = findgc
+getgchelper.backupstat = backupstat
+getgchelper.revertstat = revertstat
+getgchelper.modifystats = modifystats
+return getgchelper
