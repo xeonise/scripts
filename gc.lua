@@ -3,19 +3,39 @@ getgenv().originalValues = {}
 getgchelper = {}
 local function findgc(...)
     local args = {...}
-    for i, v in pairs(getgc(true)) do
-        if type(v) == 'table' then
-            for _, argSet in ipairs(args) do
-                local matches = true
-                for i, key in ipairs(argSet) do
-                    if not rawget(v, key) then
-                        matches = false
-                        break
+    if #args > 1 then
+        for i, v in pairs(getgc(true)) do
+            if type(v) == 'table' then
+                for idx, argSet in ipairs(args) do
+                    local matches = true
+                    for _, pair in ipairs(argSet) do
+                        local key, value = pair[1], pair[2]
+                        if rawget(v, key) ~= value then
+                            matches = false
+                            break
+                        end
+                    end
+                    if matches then
+                        table.insert(getgenv().getgctables, v)
+                        break  -- We break once we find a match in the current index set
                     end
                 end
-                
-                if matches then
-                    table.insert(getgenv().getgctables, v)
+            end
+        end
+    else
+        for i, v in pairs(getgc(true)) do
+            if type(v) == 'table' then
+                for _, argSet in ipairs(args) do
+                    local matches = true
+                    for i, key in ipairs(argSet) do
+                        if not rawget(v, key) then
+                            matches = false
+                            break
+                        end
+                    end
+                    if matches then
+                        table.insert(getgenv().getgctables, v)
+                    end
                 end
             end
         end
