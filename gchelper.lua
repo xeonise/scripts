@@ -2,7 +2,7 @@ getgctables = {}
 originalValues = {}
 local getgchelper = {}
 
-function getgchelper.findgc(...)
+function findgc(...)
     local args = {...}
     for i, v in pairs(getgc(true)) do
         if type(v) == 'table' then
@@ -23,7 +23,7 @@ function getgchelper.findgc(...)
     end
 end
 
-function getgchelper.backupstat(tableIndex, key)
+function backupstat(tableIndex, key)
     if getgenv().getgctables[tableIndex] then
         local tbl = getgenv().getgctables[tableIndex]
         if rawget(tbl, key) then
@@ -36,7 +36,7 @@ function getgchelper.backupstat(tableIndex, key)
     end
 end
 
-function getgchelper.revertstat(tableIndex, key)
+function revertstat(tableIndex, key)
     if getgenv().getgctables[tableIndex] then
         local tbl = getgenv().getgctables[tableIndex]
         if rawget(tbl, key) and getgenv().originalValues[key] then
@@ -49,7 +49,7 @@ function getgchelper.revertstat(tableIndex, key)
     end
 end
 
-function getgchelper.modifystats(tableIndex, key, newValue)
+function modifystats(tableIndex, key, newValue)
     if getgenv().getgctables[tableIndex] then
         local tbl = getgenv().getgctables[tableIndex]
         if rawget(tbl, key) then
@@ -61,3 +61,8 @@ function getgchelper.modifystats(tableIndex, key, newValue)
         print("Table at index " .. tableIndex .. " not found.")
     end
 end
+getgchelper.findgc = findgc
+getgchelper.backupstat = backupstat
+getgchelper.revertstat = revertstat
+getgchelper.modifystats = modifystats
+return getgchelper
