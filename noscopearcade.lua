@@ -1,6 +1,7 @@
-repeat
-    task.wait()
-until game:IsLoaded()
+
+repeat task.wait() until game:IsLoaded()
+local Sense = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Sirius/request/library/sense/source.lua'))()
+local gc = loadstring(game:HttpGet("https://raw.githubusercontent.com/xeonise/scripts/refs/heads/main/gc.lua",true))()
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
@@ -13,8 +14,8 @@ local Window = Library:CreateWindow({
     MenuFadeTime = 0.2
 })
 
-gh = loadstring(game:HttpGet("https://raw.githubusercontent.com/xeonise/scripts/refs/heads/main/gc.lua",true))()
 
+Sense.Load()
 
 --getting everything from garbage collector :money_mouth:
 
@@ -22,7 +23,7 @@ local Tabs = {
     Main = Window:AddTab('Main'),
     ['UI Settings'] = Window:AddTab('UI Settings'),
 }
-gh.findgc({"FireRate","ReloadTime","RecoilMult"}, {"Main","Gun","SettingMod","WallJump","Running","Slide"})
+gc.findgc({"FireRate","ReloadTime","RecoilMult"}, {"Main","Gun","SettingMod","WallJump","Running","Slide"})
 
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Gun Mods')
 LeftGroupBox:AddToggle('rapidfire', {
@@ -34,10 +35,10 @@ LeftGroupBox:AddToggle('rapidfire', {
         print('[cb] rapidfire changed to:', Value)
 
         if Value then
-            gh.backupstat(1,"FireRate")
-            gh.modifystats(1,"FireRate",0) -- Set FireRate to 0 for rapid fire
+            gc.backupstat(1,"FireRate")
+            gc.modifystats(1,"FireRate",0) -- Set FireRate to 0 for rapid fire
         else
-            gh.revertstat(1,"FireRate") -- Revert to the original FireRate value
+            gc.revertstat(1,"FireRate") -- Revert to the original FireRate value
         end
     end
 })
@@ -51,10 +52,10 @@ LeftGroupBox:AddToggle('infammo', {
 
         while Value do task.wait()
         if Value then
-            gh.backupstat(1,"ClipSize")
-            gh.modifystats(1,"ClipSize",999999999) 
+            gc.backupstat(1,"ClipSize")
+            gc.modifystats(1,"ClipSize",999999999) 
         else
-            gh.revertstat(1,"ClipSize") 
+            gc.revertstat(1,"ClipSize") 
         end
     end
     end
@@ -69,10 +70,10 @@ LeftGroupBox:AddToggle('automatic', {
         while Value do task.wait()
 
         if Value then
-            gh.backupstat(1,"Automatic")
-            gh.modifystats(1,"Automatic",true,"boolean") 
+            gc.backupstat(1,"Automatic")
+            gc.modifystats(1,"Automatic",true,"boolean") 
         else
-            gh.revertstat(1,"Automatic") 
+            gc.revertstat(1,"Automatic") 
         end
     end
     end
@@ -87,10 +88,10 @@ LeftGroupBox:AddToggle('instreload', {
         while Value do task.wait()
 
         if Value then
-            gh.backupstat(1,"ReloadTime")
-            gh.modifystats(1,"ReloadTime",0) 
+            gc.backupstat(1,"ReloadTime")
+            gc.modifystats(1,"ReloadTime",0) 
         else
-            gh.revertstat(1,"ReloadTime") 
+            gc.revertstat(1,"ReloadTime") 
         end
     end
     end
@@ -105,10 +106,10 @@ LeftGroupBox:AddToggle('norecoil', {
         while Value do task.wait()
 
         if Value then
-            gh.backupstat(1,"RecoilMult")
-            gh.modifystats(1,"RecoilMult",0) 
+            gc.backupstat(1,"RecoilMult")
+            gc.modifystats(1,"RecoilMult",0) 
         else
-            gh.revertstat(1,"RecoilMult") 
+            gc.revertstat(1,"RecoilMult") 
         end
     end
     end
@@ -145,25 +146,53 @@ plr:AddSlider('FOV', {
     Rounding = 0,
     Compact = false,
     Callback = function(fov)
-        gh.modifystats(2,"Main", fov)
-        gh.modifystats(2,"Gun", fov)
-        gh.modifystats(2,"SettingMod", fov)
-        gh.modifystats(2,"WallJump", fov)
-        gh.modifystats(2,"Running", fov)
-        gh.modifystats(2,"Slide", fov)
+        gc.modifystats(2,"Main", fov)
+        gc.modifystats(2,"Gun", fov)
+        gc.modifystats(2,"SettingMod", fov)
+        gc.modifystats(2,"WallJump", fov)
+        gc.modifystats(2,"Running", fov)
+        gc.modifystats(2,"Slide", fov)
     end
 })
 
+local vis = Tabs.Main:AddRightGroupbox('Visuals')
 
+
+
+vis:AddToggle('ESP', {
+    Text = 'Player ESP',
+    Default = true, 
+    Tooltip = 'is a esp.', 
+
+    Callback = function(Value)
+        if Value then
+            Sense.Load()
+            Sense.teamSettings.enemy.enabled = true
+            Sense.teamSettings.enemy.box = true
+        else
+            Sense.Unload()
+        end
+    end
+})
+
+vis:AddLabel('Color'):AddColorPicker('ColorPicker', {
+    Default = Color3.new(0.635294, 0.654901, 1), -- Bright green
+    Title = 'ESP color', 
+    Transparency = 0,
+
+    Callback = function(Value)
+        Sense.teamSettings.enemy.boxColor[1] = Value
+    end
+})
 
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
 Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
 
-for _, toggle in pairs({ rapidfire = Toggles.rapidfire, infammo = Toggles.infammo, automatic = Toggles.automatic, instreload = Toggles.instreload, norecoil = Toggles.norecoil, BHitboxes = Toggles.BHitboxes }) do
+for _, toggle in pairs({ rapidfire = Toggles.rapidfire, infammo = Toggles.infammo, automatic = Toggles.automatic, instreload = Toggles.instreload, norecoil = Toggles.norecoil, BHitboxes = Toggles.BHitboxes, Toggles.ESP, Toggles.espname }) do
     toggle:SetValue(false)
-end -- fix for toggles not working for some reason, when they get autoenabled by the ui library for some reason.
+end -- fix for toggles not working, when they get autoenabled by the ui library.
 
 Library.ToggleKeybind = Options.MenuKeybind
 ThemeManager:SetLibrary(Library)
