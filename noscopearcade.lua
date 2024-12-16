@@ -176,7 +176,7 @@ vis:AddToggle('ESP', {
 })
 
 vis:AddLabel('Color'):AddColorPicker('ColorPicker', {
-    Default = Color3.new(0.635294, 0.654901, 1), -- Bright green
+    Default = Color3.new(0.635294, 0.654901, 1), -- light blue
     Title = 'ESP color', 
     Transparency = 0,
 
