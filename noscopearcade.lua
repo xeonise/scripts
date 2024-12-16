@@ -1,3 +1,6 @@
+repeat
+    task.wait()
+until game:IsLoaded()
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
@@ -10,38 +13,8 @@ local Window = Library:CreateWindow({
     MenuFadeTime = 0.2
 })
 
-getgenv().statsTables = {}
-getgenv().originalValues = {}
-for i, v in pairs(getgc(true)) do
-    if type(v) == 'table' then
-        if rawget(v, 'FireRate') then
-            table.insert(getgenv().statsTables, v) 
-        end
-    end
-end 
-function backupstat(key)
-    for _, tbl in pairs(getgenv().statsTables) do
-        if rawget(tbl, key) then
-            getgenv().originalValues[key] = tbl[key] 
-        end
-    end
-end
-function revertstat(key)
-    if getgenv().originalValues[key] then
-        for _, tbl in pairs(getgenv().statsTables) do
-            if rawget(tbl, key) then
-                tbl[key] = getgenv().originalValues[key]
-            end
-        end
-    end
-end
-function modifystats(key, newValue)
-    for _, tbl in pairs(getgenv().statsTables) do
-        if rawget(tbl, key) then
-            tbl[key] = newValue
-        end
-    end
-end
+gh = loadstring(game:HttpGet("https://raw.githubusercontent.com/xeonise/scripts/refs/heads/main/gc.lua",true))()
+
 
 --getting everything from garbage collector :money_mouth:
 
@@ -49,6 +22,7 @@ local Tabs = {
     Main = Window:AddTab('Main'),
     ['UI Settings'] = Window:AddTab('UI Settings'),
 }
+gh.findgc({"FireRate","ReloadTime","RecoilMult"}, {"Main","Gun","SettingMod","WallJump","Running","Slide"})
 
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Gun Mods')
 LeftGroupBox:AddToggle('rapidfire', {
@@ -60,10 +34,10 @@ LeftGroupBox:AddToggle('rapidfire', {
         print('[cb] rapidfire changed to:', Value)
 
         if Value then
-            backupstat('FireRate')  -- Backup current FireRate value before changing it
-            modifystats("FireRate", 0) -- Set FireRate to 0 for rapid fire
+            gh.backupstat(1,"FireRate")
+            gh.modifystats(1,"FireRate",0) -- Set FireRate to 0 for rapid fire
         else
-            revertstat('FireRate') -- Revert to the original FireRate value
+            gh.revertstat(1,"FireRate") -- Revert to the original FireRate value
         end
     end
 })
@@ -75,12 +49,14 @@ LeftGroupBox:AddToggle('infammo', {
     Callback = function(Value)
         print('[cb] infammo changed to:', Value)
 
+        while Value do task.wait()
         if Value then
-            backupstat('ClipSize')
-            modifystats("ClipSize", 999999999) 
+            gh.backupstat(1,"ClipSize")
+            gh.modifystats(1,"ClipSize",999999999) 
         else
-            revertstat('ClipSize') 
+            gh.revertstat(1,"ClipSize") 
         end
+    end
     end
 })
 LeftGroupBox:AddToggle('automatic', {
@@ -90,13 +66,15 @@ LeftGroupBox:AddToggle('automatic', {
 
     Callback = function(Value)
         print('[cb] automatic changed to:', Value)
+        while Value do task.wait()
 
         if Value then
-            backupstat('Automatic')
-            modifystats("Automatic", true) 
+            gh.backupstat(1,"Automatic")
+            gh.modifystats(1,"Automatic",true,"boolean") 
         else
-            revertstat('Automatic') 
+            gh.revertstat(1,"Automatic") 
         end
+    end
     end
 })
 LeftGroupBox:AddToggle('instreload', {
@@ -106,13 +84,15 @@ LeftGroupBox:AddToggle('instreload', {
 
     Callback = function(Value)
         print('[cb] instreload changed to:', Value)
+        while Value do task.wait()
 
         if Value then
-            backupstat('ReloadTime')
-            modifystats("ReloadTime", 0) 
+            gh.backupstat(1,"ReloadTime")
+            gh.modifystats(1,"ReloadTime",0) 
         else
-            revertstat('ReloadTime') 
+            gh.revertstat(1,"ReloadTime") 
         end
+    end
     end
 })
 LeftGroupBox:AddToggle('norecoil', {
@@ -122,16 +102,18 @@ LeftGroupBox:AddToggle('norecoil', {
 
     Callback = function(Value)
         print('[cb] norecoil changed to:', Value)
+        while Value do task.wait()
 
         if Value then
-            backupstat('RecoilMult')
-            modifystats("RecoilMult", 0) 
+            gh.backupstat(1,"RecoilMult")
+            gh.modifystats(1,"RecoilMult",0) 
         else
-            revertstat('RecoilMult') 
+            gh.revertstat(1,"RecoilMult") 
         end
     end
+    end
 })
-local plr = Tabs.Main:AddRightGroupbox('Gun Mods')
+local plr = Tabs.Main:AddRightGroupbox('Player')
 
 plr:AddToggle('BHitboxes', {
     Text = 'Bigger hitboxes',
@@ -155,6 +137,22 @@ plr:AddToggle('BHitboxes', {
         end
 })
 
+plr:AddSlider('FOV', {
+    Text = 'Field Of View',
+    Default = 2,
+    Min = 0,
+    Max = 8, -- ingame fov is a little bit different in values for some reason
+    Rounding = 0,
+    Compact = false,
+    Callback = function(fov)
+        gh.modifystats(2,"Main", fov)
+        gh.modifystats(2,"Gun", fov)
+        gh.modifystats(2,"SettingMod", fov)
+        gh.modifystats(2,"WallJump", fov)
+        gh.modifystats(2,"Running", fov)
+        gh.modifystats(2,"Slide", fov)
+    end
+})
 
 
 
@@ -166,10 +164,6 @@ Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybi
 for _, toggle in pairs({ rapidfire = Toggles.rapidfire, infammo = Toggles.infammo, automatic = Toggles.automatic, instreload = Toggles.instreload, norecoil = Toggles.norecoil, BHitboxes = Toggles.BHitboxes }) do
     toggle:SetValue(false)
 end -- fix for toggles not working for some reason, when they get autoenabled by the ui library for some reason.
-
-
-
-
 
 Library.ToggleKeybind = Options.MenuKeybind
 ThemeManager:SetLibrary(Library)
