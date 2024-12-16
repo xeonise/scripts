@@ -1,4 +1,3 @@
-
 repeat task.wait() until game:IsLoaded()
 local Sense = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Sirius/request/library/sense/source.lua'))()
 local gc = loadstring(game:HttpGet("https://raw.githubusercontent.com/xeonise/scripts/refs/heads/main/gc.lua",true))()
