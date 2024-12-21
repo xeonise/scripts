@@ -114,11 +114,11 @@ if game.PlaceId == lobbyPlaceId then
 elseif game.PlaceId == 5591597781 then 
     if playerName == getgenv().playerNames[1] and getgenv().straturl1 then
         loadstring(game:HttpGet(tostring(getgenv().straturl1),true))()
-    elseif playerName == getgenv().playerNames[2] and getgenv().straturl2 and #getgenv().playerNames == 2 then
+    elseif playerName == getgenv().playerNames[2] and getgenv().straturl2 then
         loadstring(game:HttpGet(tostring(getgenv().stratur2l),true))()
-    elseif playerName == getgenv().playerNames[3] and getgenv().straturl3 and #getgenv().playerNames == 3 then
+    elseif playerName == getgenv().playerNames[3] and getgenv().straturl3 then
         loadstring(game:HttpGet(tostring(getgenv().straturl3),true))()
-    elseif playerName == getgenv().playerNames[4] and getgenv().straturl4 and #getgenv().playerNames == 4 then
+    elseif playerName == getgenv().playerNames[4] and getgenv().straturl4 then
         loadstring(game:HttpGet(tostring(getgenv().straturl4),true))()
     end
  
