@@ -50,34 +50,44 @@ if game.PlaceId == lobbyPlaceId then
 
     if game.Players.LocalPlayer.Name == getgenv().playerNames[1] then
         repeat
-        response = request({
-            Url = server .. "/getserver",
-            Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json",
-                ["JobId"] = game.JobId,
-                ["PlaceId"] = tostring(game.PlaceId) -- Ensure PlaceId is a string
-            }
-        })
-        until response.StatusCode ~= 400 -- Repeat until the status code is not 400
-
+            task.wait(1)
+            response = request({
+                Url = server .. "/getserver",
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json",
+                    ["JobId"] = game.JobId,
+                    ["PlaceId"] = tostring(game.PlaceId) -- Ensure PlaceId is a string
+                }
+            })
+        
+        until response.StatusCode ~= 400 and not response:find("Error")  -- Repeat until the status code is not 400 and no error in the response
+        
         lobbytper()
     else
         repeat
-        local response = request({
-            Url = server .. "/getserver",
-            Method = "GET",
-            Headers = {
-                ["Content-Type"] = "application/json"
-            }
-        }).Body
-        until response.StatusCode ~= 400 and game:GetService("HttpService"):JSONDecode(response).JobId  -- Repeat until the status code is not 400
-        local data = game:GetService("HttpService"):JSONDecode(response)
-        if data.JobId ~= game.JobId then
-            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, data.JobId, game.Players.LocalPlayer)
+            task.wait(1)
+            response = request({
+                Url = server .. "/getserver",
+                Method = "GET",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                }
+            }).Body
+        until response.StatusCode ~= 400 and not response:find("Error")  -- Repeat until the status code is not 400 and there's no "Error" in the response
+        
+        local jobId, placeId = response:match("JobId: (%S+), PlaceId: (%S+)")
+        
+        if jobId and placeId then
+            if jobId ~= game.JobId then
+                game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobId, game.Players.LocalPlayer)
+            else
+                lobbytper()
+            end
         else
-            lobbytper()
+            print("Error: Invalid response or missing JobId/PlaceId")
         end
+        
 
     end  
 
