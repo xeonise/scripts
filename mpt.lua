@@ -1,5 +1,5 @@
 -- Variables and functions are the same
-getgenv().playerNames = {"tdsaltkn", "Vikilerm"}
+getgenv().playerNames = {"p1", "p2"}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
 
