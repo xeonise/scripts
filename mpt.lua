@@ -1,10 +1,12 @@
--- Variables and functions are the same
 getgenv().playerNames = {"p1", "p2"}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
-getgenv().straturl = ''
+getgenv().p1straturl = ''
+getgenv().p2straturl = ''
+getgenv().p3straturl = ''
+getgenv().p4straturl = ''
+
 function joingame()
-    -- Call the matchmaking remote for whatever you're playing here
     game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("Multiplayer", "single_create")
     local ohTable3 = {
         ["count"] = tonumber(#getgenv().playerNames),
@@ -13,7 +15,6 @@ function joingame()
     }
     game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("Multiplayer", "v2:start", ohTable3)
 end
-
 function ready()
     local playerName = game.Players.LocalPlayer.Name
     if playerName == getgenv().playerNames[1] then
@@ -40,14 +41,11 @@ function ready()
         game.ReplicatedStorage.RemoteFunction:InvokeServer("Party", "AcceptInvite", game.Players[getgenv().playerNames[1]])
     end
 end
-
 function lobbytper()
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(70, 112, 89))
 end
-
 if game.PlaceId == lobbyPlaceId then
     print("Lobby")
-
     if game.Players.LocalPlayer.Name == getgenv().playerNames[1] then
         repeat
             task.wait(1)
@@ -62,7 +60,6 @@ if game.PlaceId == lobbyPlaceId then
             })
         
         until response.StatusCode ~= 400 and not response:find("Error")  -- Repeat until the status code is not 400 and no error in the response
-        
         lobbytper()
     else
         repeat
@@ -75,9 +72,7 @@ if game.PlaceId == lobbyPlaceId then
                 }
             }).Body
         until response.StatusCode ~= 400 and not response:find("Error")  -- Repeat until the status code is not 400 and there's no "Error" in the response
-        
         local jobId, placeId = response:match("JobId: (%S+), PlaceId: (%S+)")
-        
         if jobId and placeId then
             if jobId ~= game.JobId then
                 local success, message
@@ -97,9 +92,6 @@ if game.PlaceId == lobbyPlaceId then
         else
             print("Error: Invalid response or missing JobId/PlaceId")
         end
-        
-        
-
     end  
 
     while true do task.wait()
@@ -117,9 +109,17 @@ if game.PlaceId == lobbyPlaceId then
             ready()
             break 
         end
-
         task.wait(0.5) 
     end
 elseif game.PlaceId == 5591597781 then 
-    loadstring(game:HttpGet(tostring(getgenv().straturl),true))()
+    if playerName == getgenv().playerNames[1] and getgenv().straturl1 then
+        loadstring(game:HttpGet(tostring(getgenv().straturl1),true))()
+    elseif playerName == getgenv().playerNames[2] and getgenv().straturl2 and #getgenv().playerNames == 2 then
+        loadstring(game:HttpGet(tostring(getgenv().stratur2l),true))()
+    elseif playerName == getgenv().playerNames[3] and getgenv().straturl3 and #getgenv().playerNames == 3 then
+        loadstring(game:HttpGet(tostring(getgenv().straturl3),true))()
+    elseif playerName == getgenv().playerNames[4] and getgenv().straturl4 and #getgenv().playerNames == 4 then
+        loadstring(game:HttpGet(tostring(getgenv().straturl4),true))()
+    end
+ 
 end
