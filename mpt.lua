@@ -80,13 +80,24 @@ if game.PlaceId == lobbyPlaceId then
         
         if jobId and placeId then
             if jobId ~= game.JobId then
-                game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobId, game.Players.LocalPlayer)
+                local success, message
+                repeat
+                    success, message = pcall(function()
+                        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobId, game.Players.LocalPlayer)
+                    end)
+                    if not success and string.match(message, "Server is full") then
+                        print("Server is full, retrying...")
+                        task.wait(1)  -- Wait 5 seconds before retrying
+                    end
+                until success
+                print("Successfully teleported!")
             else
                 lobbytper()
             end
         else
             print("Error: Invalid response or missing JobId/PlaceId")
         end
+        
         
 
     end  
