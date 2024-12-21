@@ -1,7 +1,7 @@
-getgenv().playerNames = {"p1", "p2"}
+getgenv().playerNames = {"tdsaltkn", "Vikilerm"}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
-getgenv().p1straturl = ''
+getgenv().p1straturl = 'https://pastebin.com/raw/633wnFwM'
 getgenv().p2straturl = ''
 getgenv().p3straturl = ''
 getgenv().p4straturl = ''
@@ -59,7 +59,7 @@ if game.PlaceId == lobbyPlaceId then
                 }
             })
         
-        until response.StatusCode ~= 400 and not response:find("Error")  -- Repeat until the status code is not 400 and no error in the response
+        until response.StatusCode ~= 400  -- Repeat until the status code is not 400 and no error in the response
         lobbytper()
     else
         repeat
@@ -113,13 +113,13 @@ if game.PlaceId == lobbyPlaceId then
     end
 elseif game.PlaceId == 5591597781 then 
     if playerName == getgenv().playerNames[1] and getgenv().straturl1 then
-        loadstring(game:HttpGet(tostring(getgenv().straturl1),true))()
+        loadstring(game:HttpGet(getgenv().straturl1,true))()
     elseif playerName == getgenv().playerNames[2] and getgenv().straturl2 then
-        loadstring(game:HttpGet(tostring(getgenv().stratur2l),true))()
+        loadstring(game:HttpGet(getgenv().stratur2l,true))()
     elseif playerName == getgenv().playerNames[3] and getgenv().straturl3 then
-        loadstring(game:HttpGet(tostring(getgenv().straturl3),true))()
+        loadstring(game:HttpGet(getgenv().straturl3,true))()
     elseif playerName == getgenv().playerNames[4] and getgenv().straturl4 then
-        loadstring(game:HttpGet(tostring(getgenv().straturl4),true))()
+        loadstring(game:HttpGet(getgenv().straturl4,true))()
     end
  
 end
