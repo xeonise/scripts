@@ -1,7 +1,7 @@
-getgenv().playerNames = {"tdsaltkn", "Vikilerm"}
+getgenv().playerNames = {"", ""}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
-getgenv().p1straturl = 'https://pastebin.com/raw/633wnFwM'
+getgenv().p1straturl = ''
 getgenv().p2straturl = ''
 getgenv().p3straturl = ''
 getgenv().p4straturl = ''
