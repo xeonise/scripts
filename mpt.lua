@@ -71,7 +71,7 @@ if game.PlaceId == lobbyPlaceId then
                 ["Content-Type"] = "application/json"
             }
         }).Body
-        until response.StatusCode ~= 400 -- Repeat until the status code is not 400
+        until response.StatusCode ~= 400 and game:GetService("HttpService"):JSONDecode(response).JobId  -- Repeat until the status code is not 400
         local data = game:GetService("HttpService"):JSONDecode(response)
         if data.JobId ~= game.JobId then
             game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, data.JobId, game.Players.LocalPlayer)
