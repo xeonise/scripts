@@ -7,7 +7,7 @@ function joingame()
     -- Call the matchmaking remote for whatever you're playing here
     game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("Multiplayer", "single_create")
     local ohTable3 = {
-        ["count"] = tonubmer(#getgenv().playerNames),
+        ["count"] = tonumber(#getgenv().playerNames),
         ["mode"] = "badlands",
         ["challenge"] = "Badlands"
     }
