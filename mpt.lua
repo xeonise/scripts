@@ -2,7 +2,7 @@
 getgenv().playerNames = {"p1", "p2"}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
-
+getgenv().straturl = ''
 function joingame()
     -- Call the matchmaking remote for whatever you're playing here
     game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("Multiplayer", "single_create")
@@ -120,4 +120,6 @@ if game.PlaceId == lobbyPlaceId then
 
         task.wait(0.5) 
     end
+elseif game.PlaceId == 5591597781 then 
+    loadstring(game:HttpGet(tostring(getgenv().straturl),true))()
 end
