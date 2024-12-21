@@ -1,5 +1,5 @@
 -- Variables and functions are the same
-getgenv().playerNames = {"p1", "p2"}
+getgenv().playerNames = {"tdsaltkn", "Vikilerm"}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
 
@@ -99,14 +99,4 @@ if game.PlaceId == lobbyPlaceId then
 
         task.wait(0.5) 
     end
-elseif game.PlaceId == 200361 then
-    print("Game")
-    while true do
-        task.wait(1)
-        if getgenv().gameend then
-            restartgame()
-        end
-    end
-else
-    print("Unknown PlaceId")
 end
