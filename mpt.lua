@@ -1,4 +1,4 @@
-getgenv().playerNames = {"", ""}
+getgenv().playerNames = {}
 local lobbyPlaceId = 3260590327
 local server = 'http://localhost:8080'
 getgenv().p1straturl = ''
