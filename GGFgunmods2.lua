@@ -2,13 +2,14 @@
 while true do task.wait()
     local item = workspace:FindFirstChild(game.Players.LocalPlayer.Name):FindFirstChildOfClass("Tool")
     if item then
-		item.Configuration.reloadTime.Value = 0
-		item.Configuration.FireRate.Value = 0
-		if item.Configuration.recoil.Value then
-			item.Configuration.recoil.Value = 0
-		end 
-		if item.Configuration.isAuto.Value then
-			item.Configuration.isAuto.Value = true
-		end 
+        if item.Configuration.reloadTime then 
+            item.Configuration.reloadTime.Value = 0
+        elseif item.Configuration.FireRate then 
+            item.Configuration.FireRate.Value = 0
+        elseif item.Configuration.recoil then
+            item.Configuration.recoil.Value = 0
+        elseif item.Configuration.isAuto then
+            item.Configuration.isAuto.Value = true
+        end 
     end
 end
