@@ -10,8 +10,15 @@ local function findgc(...)
         if type(v) == 'table' then
             for setIndex, keys in ipairs(keySets) do
                 local found = true
-                for _, key in ipairs(keys) do
-                    if rawget(v, key) == nil then
+                for key, val in pairs(keys) do
+                    if type(key) == "number" then
+                        key = val
+                        val = nil
+                    end
+                    if val ~= nil and rawget(v, key) ~= val then
+                        found = false
+                        break
+                    elseif val == nil and rawget(v, key) == nil then
                         found = false
                         break
                     end
