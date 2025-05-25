@@ -39,7 +39,10 @@ def check_timeout():
         debug_log(f"Checking timeout - Last ping: {elapsed:.1f}s ago")
 
         if elapsed > TIMEOUT:
-            debug_log("❗ Timeout reached! Launching Roblox...")
+            debug_log("❗ Timeout reached! Terminating Roblox and launching again...")
+            # Terminate Roblox first
+            os.system('su -c "am force-stop com.roblox.client"')
+            # Then launch Roblox
             os.system('su -c \'am start -a android.intent.action.VIEW -d "roblox://placeID=9503261072"\'')
             last_message_time = current_time  # Reset timer
         time.sleep(5)
